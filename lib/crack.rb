@@ -14,8 +14,18 @@ infile = File.new(ARGV[0], "r")
 infile_text = infile.read.downcase.gsub(/[^a-z0-9,. ]/, ' ')
 infile.close
 
+if File.exists?(ARGV[1])
+  puts "A file by the name of '#{ARGV[1]}' already exists. Are you sure you want to overwrite it? Confirm with 'Yes', otherwise program will terminate."
+  input = $stdin.gets.chomp
+  if input != "Yes"
+    abort("Cancelled.")
+  end
+end
+
 this_cracker = Cracker.new(infile_text, ARGV[2])
-this_cracker.reconstruct_key
+if this_cracker.forcibly_reforge_key == "ATTEMPT FAILED"
+  abort("Attempt failed.")
+end
 this_decryptor = Decryptor.new(infile_text, this_cracker.cracked_key.keystr, ARGV[2])
 
 outfile = File.new(ARGV[1], "w")

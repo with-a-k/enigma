@@ -7,12 +7,20 @@ require_relative 'key'
 require_relative 'decryptor'
 require_relative 'rotator'
 
-puts "You need to supply a key!" if ARGV[2] == nil
-return if ARGV[2] == nil
+abort("Supply filename(s).") if ARGV[0] == nil | ARGV[1] == nil
+abort("Supply a key.") if ARGV[2] == nil
 
 infile = File.new(ARGV[0], "r")
 infile_text = infile.read.downcase.gsub(/[^a-z0-9,. ]/, ' ')
 infile.close
+
+if File.exists?(ARGV[1])
+  puts "A file by the name of '#{ARGV[1]}' already exists. Are you sure you want to overwrite it? Confirm with 'Yes', otherwise program will terminate."
+  input = $stdin.gets.chomp
+  if input != "Yes"
+    abort("Cancelled.")
+  end
+end
 
 this_decryptor = Decryptor.new(infile_text, ARGV[2], ARGV[3])
 

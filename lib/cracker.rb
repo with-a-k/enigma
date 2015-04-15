@@ -44,29 +44,38 @@ class Cracker
     @revolver.rotate!((3-(text.length%4)))
   end
 
-  def reconstruct_key
-    retrieve_revolver
-    rotations = (0...4).map { |i| @revolver[i] - grab_offsets[i] }
-    while digits_mismatch?(rotations) != nil
-      rotations[digits_mismatch?(rotations) + 1] += 39
-      break if rotations.any? { |number| number >= 100}
+  # def reconstruct_key
+  #   retrieve_revolver
+  #   rotations = (0...4).map { |i| @revolver[i] - grab_offsets[i] }
+  #   while digits_mismatch?(rotations) != nil
+  #     rotations[digits_mismatch?(rotations) + 1] += character_map.length
+  #     break if rotations.any? { |number| number >= 100}
+  #   end
+  #   return "ATTEMPT FAILED" if rotations.any? { |number| number >= 100}
+  #   @cracked_key = Key.new(compress_key(rotations), date)
+  # end
+
+  # def digits_mismatch?(rotations)
+  #   (0...3).find_index { |i| rotations[i].to_s[1] != rotations[i+1].to_s[0] }
+  # end
+
+  # def grab_offsets
+  #   squaretime = date.to_i**2
+  #   squaretime.to_s.each_char.map(&:to_i).last(4)
+  # end
+
+  # def compress_key(rotations)
+  #   rotations.reduce("") do |memo, number|
+  #     memo + number.to_s[0]
+  #   end + rotations.last.to_s[1]
+  # end
+
+  def forcibly_reforge_key
+    cracked_keynum = (0...100000).find do |keynum|
+      decryptor = Decryptor.new(text, keynum, date)
+      decryptor.decrypt[-7..-1] == "..end.."
     end
-    return "ATTEMPT FAILED" if rotations.any? { |number| number >= 100}
-    @cracked_key = Key.new(compress_key(rotations), date)
-  end
-
-  def digits_mismatch?(rotations)
-    (0...3).find_index { |i| rotations[i].to_s[1] != rotations[i+1].to_s[0] }
-  end
-
-  def grab_offsets
-    squaretime = date.to_i**2
-    squaretime.to_s.each_char.map(&:to_i).last(4)
-  end
-
-  def compress_key(rotations)
-    rotations.reduce("") do |memo, number|
-      memo + number.to_s[0]
-    end + rotations.last.to_s[1]
+    return "ATTEMPT FAILED" if cracked_keynum == nil
+    @cracked_key = Key.new(cracked_keynum, date)
   end
 end

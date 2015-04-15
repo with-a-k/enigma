@@ -32,9 +32,9 @@ class CrackerTest < Minitest::Test
     assert_equal [27, 16, 34, 31], testcracker.retrieve_revolver
   end
 
-  def test_revolvers_can_retrieve_keys
+  def test_revolvers_can_reforge_keys
     testcracker = Cracker.new("zo,f4o6", "140415")
-    testcracker.reconstruct_key
+    testcracker.forcibly_reforge_key
     assert_equal 25326, testcracker.cracked_key.keystr.to_i
   end
 end

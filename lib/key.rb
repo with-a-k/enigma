@@ -2,8 +2,8 @@ class Key
   attr_reader :keystr, :keydate, :revolver
 
   def initialize(keystr = generate, keydate = todaystring)
-    @keystr = keystr.to_s
-    @keydate = keydate
+    @keystr = keystr.nil? ? generate.to_s : keystr.to_s
+    @keydate = keydate.nil? ? todaystring : keydate
     create_revolver
   end
 

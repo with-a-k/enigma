@@ -20,7 +20,7 @@ class KeyTest < Minitest::Test
 
   def test_creates_string_from_today
     testkey = Key.new
-    assert_equal "140415", testkey.todaystring
+    assert_equal Time.new.strftime("%d%m%y"), testkey.todaystring
   end
 
   def test_pulls_offsets_from_unsupplied_date

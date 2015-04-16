@@ -24,7 +24,7 @@ end
 
 this_cracker = Cracker.new(infile_text, ARGV[2])
 if this_cracker.forcibly_reforge_key == "ATTEMPT FAILED"
-  abort("Attempt failed.")
+  abort("Attempt failed. The date may be incorrect, or the message may not be able to be cracked.")
 end
 this_decryptor = Decryptor.new(infile_text, this_cracker.cracked_key.keystr, ARGV[2])
 
